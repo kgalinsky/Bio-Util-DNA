@@ -29,39 +29,38 @@ package JCVI::DNATools;
 use strict;
 use warnings;
 
-use version;
-our $VERSION = qv('0.1.6');
+use version; our $VERSION = qv('0.1.8');
 
 use Exporter 'import';
+
+my $funcs = [
+        qw(
+          cleanDNA
+          randomDNA
+          reverse_complement
+          rev_comp
+          )
+    ]; 
 
 our %EXPORT_TAGS = (
     all => [
         qw(
           %degenerate_map
 
-          @nucs
           $nucs
+          @nucs
           $nuc_match
           $nuc_fail
 
-          @degens
           $degens
+          @degens
           $degen_match
           $degen_fail
-
-          cleanDNA
-          randomDNA
-          reverse_complement
-          )
+          ), @$funcs
+          
     ],
 
-    funcs => [
-        qw(
-          cleanDNA
-          randomDNA
-          reverse_complement
-          )
-    ]
+    funcs => $funcs
 );
 
 our @EXPORT_OK = @{ $EXPORT_TAGS{all} };
@@ -101,22 +100,23 @@ a nucleotide. $degen* is the same thing but with degenerates.
 =cut
 
 our $nucs      = 'ABCDGHKMNRSTUVWY';
+our @nucs      = split //, $nucs;
 our $nuc_match = qr/[$nucs]/i;
 our $nuc_fail  = qr/[^$nucs]/i;
 
 our $degens      = 'BDHKMNRSVWY';
+our @degens      = split //, $degens;
 our $degen_match = qr/[$degens]/i;
 our $degen_fail  = qr/[^$degens]/i;
 
 =head1 FUNCTIONS
 
-=head2 cleanDNA()
+=head2 cleanDNA
 
     my $clean_ref = cleanDNA($seq_ref);
 
-Cleans the sequence for use. Strips out comments (lines
-starting with '>') and whitespace, converts uracil to
-thymine, and capitalizes all characters.
+Cleans the sequence for use. Strips out comments (lines starting with '>') and
+whitespace, converts uracil to thymine, and capitalizes all characters.
 
 Examples:
 
@@ -141,7 +141,7 @@ sub cleanDNA {
     return \$clean;
 }
 
-=head2 randomDNA()
+=head2 randomDNA
 
     my $seq_ref = randomDNA($length);
 
@@ -166,7 +166,7 @@ sub randomDNA {
     return \$seq;
 }
 
-=head2 reverse_complement()
+=head2 reverse_complement
 
     my $reverse_ref = reverse_complement($seq_ref);
 
@@ -187,6 +187,14 @@ sub reverse_complement {
 
     return \$reverse;
 }
+
+=head2 rev_comp
+
+See reverse_complement.
+
+=cut
+
+*rev_comp = \&reverse_complement;
 
 1;
 
