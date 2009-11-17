@@ -29,39 +29,36 @@ package JCVI::DNATools;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.1.8');
+use version; our $VERSION = qv('0.1.9');
 
 use Exporter 'import';
 
-my $funcs = [
-        qw(
-          cleanDNA
-          randomDNA
-          reverse_complement
-          rev_comp
-          )
-    ]; 
+our %EXPORT_TAGS;
+$EXPORT_TAGS{funcs} = [
+    qw(
+      cleanDNA
+      randomDNA
+      reverse_complement
+      rev_comp
+      )
+];
+$EXPORT_TAGS{all} = [
+    @{ $EXPORT_TAGS{funcs} },
+    qw(
+      %degenerate_map
+      %degenerate_hierarchy
 
-our %EXPORT_TAGS = (
-    all => [
-        qw(
-          %degenerate_map
+      $nucs
+      @nucs
+      $nuc_match
+      $nuc_fail
 
-          $nucs
-          @nucs
-          $nuc_match
-          $nuc_fail
-
-          $degens
-          @degens
-          $degen_match
-          $degen_fail
-          ), @$funcs
-          
-    ],
-
-    funcs => $funcs
-);
+      $degens
+      @degens
+      $degen_match
+      $degen_fail
+      )
+];
 
 our @EXPORT_OK = @{ $EXPORT_TAGS{all} };
 
@@ -76,17 +73,33 @@ nucleotide stands for.
 =cut
 
 our %degenerate_map = (
-    N => [ 'A', 'C', 'G', 'T' ],
-    V => [ 'A', 'C', 'G' ],
-    H => [ 'A', 'C', 'T' ],
-    D => [ 'A', 'G', 'T' ],
-    B => [ 'C', 'G', 'T' ],
-    M => [ 'A', 'C' ],
-    R => [ 'A', 'G' ],
-    W => [ 'A', 'T' ],
-    S => [ 'C', 'G' ],
-    Y => [ 'C', 'T' ],
-    K => [ 'G', 'T' ]
+    N => [qw( A C G T )],
+    B => [qw(   C G T )],    # !A
+    D => [qw( A   G T )],    # !C
+    H => [qw( A C   T )],    # !G
+    V => [qw( A C G   )],    # !T
+    M => [qw( A C     )],
+    R => [qw( A   G   )],
+    W => [qw( A     T )],
+    S => [qw(   C G   )],
+    Y => [qw(   C   T )],
+    K => [qw(     G T )]
+);
+
+=head2 %degenerate_hierarchy
+
+Contains the heirarchy of degenerate nucleotides; N of course contains all the
+other degenerates, and the four degenerates that can stand for three different
+bases contain three of the two-base degenerates.
+
+=cut
+
+our %degenerate_hierarchy = (
+    N => [qw( M R W S Y K   V H D B )],
+    B => [qw(       S Y K )],             # !A = [CG],[CT],[GT]
+    D => [qw(   R W     K )],             # !C = [AT],[AG],[GT]
+    H => [qw( M   W   Y   )],             # !G = [AC],[AT],[CT]
+    V => [qw( M R   S     )]              # !T = [AC],[AG],[CG]
 );
 
 =head2 BASIC VARIABLES
@@ -168,6 +181,8 @@ sub randomDNA {
 
 =head2 reverse_complement
 
+=head2 rev_comp
+
     my $reverse_ref = reverse_complement($seq_ref);
 
 Finds the reverse complement of the sequence and handles
@@ -187,12 +202,6 @@ sub reverse_complement {
 
     return \$reverse;
 }
-
-=head2 rev_comp
-
-See reverse_complement.
-
-=cut
 
 *rev_comp = \&reverse_complement;
 

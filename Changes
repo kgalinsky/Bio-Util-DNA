@@ -1,5 +1,9 @@
 Revision history for JCVI-DNATools
 
+0.1.9 Nov 17 2009
+  - Added %degenerate_hierarchy
+  - Made %degenerate_map more readable
+
 0.1.8 Apr 15 2009
   - Added rev_comp as shortcut for reverse_complement
   - Put use version on same line as $VERSION declared
