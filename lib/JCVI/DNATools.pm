@@ -19,8 +19,8 @@ JCVI::DNATools - JCVI Basic DNA tools
 
 =head1 DESCRIPTION
 
-Provides a set of functions and predefined variables which
-are handy when working with DNA.
+Provides a set of functions and predefined variables which are handy when
+working with DNA.
 
 =cut
 
@@ -29,7 +29,7 @@ package JCVI::DNATools;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.1.10');
+use version; our $VERSION = qv('0.2.0');
 
 use Exporter 'import';
 
@@ -39,24 +39,34 @@ $EXPORT_TAGS{funcs} = [
       cleanDNA
       randomDNA
       reverse_complement
-      rev_comp
       )
 ];
 $EXPORT_TAGS{all} = [
     @{ $EXPORT_TAGS{funcs} },
     qw(
-      $nucleotides              $nucs
-      @nucleotides              @nucs
-      $nucleotide_match         $nuc_match
-      $nucleotide_fail          $nuc_fail
+      $DNAs
+      @DNAs
+      $DNA_match
+      $DNA_fail
 
-      $degenerates              $degens
-      @degenerates              @degens
-      $degenerate_match         $degen_match
-      $degenerate_fail          $degen_fail
+      $RNAs
+      @RNAs
+      $RNA_match
+      $RNA_fail
 
-      %degenerate_map           %degen_map
-      %degenerate_hierarchy     %degen_hierarchy
+      $degenerates
+      @degenerates
+      $degenerate_match
+      $degenerate_fail
+
+      $all_nucleotides
+      @all_nucleotides
+      $all_nucleotide_match
+      $all_nucleotide_fail
+
+      %degenerate2nucleotides
+      %nucleotides2degenerate
+      %degenerate_hierarchy
       )
 ];
 
@@ -66,56 +76,110 @@ our @EXPORT_OK = @{ $EXPORT_TAGS{all} };
 
 =head2 BASIC VARIABLES
 
-Basic nucleotide variables that could be useful. $nucs is a
-string containing all the nucleotides (including the
-degenerate ones). $nuc_match and $nuc_fail are precompiled
-regular expressions that can be used to match for/against
-a nucleotide. $degen* is the same thing but with degenerates.
+Basic nucleotide variables that could be useful. All of the variables have a
+prefix and a suffix;
+
+=head3 Prefixes
+
+=over
+
+=item DNA [ACGT]
+
+=item RNA [ACGU]
+
+=item degenerate
+
+=item all_nucleotide
+
+=back
+
+=head3 Suffixes
+
+=over
+
+=item ${prefix}s
+
+String of the different nucleotides
+
+=item @{prefix}s
+
+Array of the different nucleotides
+
+=item ${prefix}_match
+
+Precompiled regular expression which matches nucleotide characters
+
+=item ${prefix}_fail
+
+Precompiled regular expression which matches non-nucleotide characters
+
+=back
 
 =cut
 
-our $nucleotides      = 'ABCDGHKMNRSTUVWY';
-our @nucleotides      = split //, $nucleotides;
-our $nucleotide_match = qr/[$nucleotides]/i;
-our $nucleotide_fail  = qr/[^$nucleotides]/i;
+our $DNAs      = 'ACGT';
+our @DNAs      = split //, $DNAs;
+our $DNA_match = qr/[$DNAs]/i;
+our $DNA_fail  = qr/[^$DNAs]/i;
 
-our $nucs      = $nucleotides;
-our @nucs      = @nucleotides;
-our $nuc_match = $nucleotide_match;
-our $nuc_fail  = $nucleotide_fail;
+our $RNAs      = 'ACGU';
+our @RNAs      = split //, $RNAs;
+our $RNA_match = qr/[$RNAs]/i;
+our $RNA_fail  = qr/[^$RNAs]/i;
 
 our $degenerates      = 'BDHKMNRSVWY';
 our @degenerates      = split //, $degenerates;
 our $degenerate_match = qr/[$degenerates]/i;
 our $degenerate_fail  = qr/[^$degenerates]/i;
 
-our $degens      = $degenerates;
-our @degens      = @degenerates;
-our $degen_match = $degenerate_match;
-our $degen_fail  = $degenerate_fail;
+our $all_nucleotides      = 'ACGTUBDHKMNRSVWY';
+our @all_nucleotides      = split //, $all_nucleotides;
+our $all_nucleotide_match = qr/[$all_nucleotides]/i;
+our $all_nucleotide_fail  = qr/[^$all_nucleotides]/i;
 
-=head2 %degenerate_map
+=head2 %degenerate2nucleotides
 
-Hash of degenerate nucleotides. Each entry contains a
-reference to an array of nucleotides that each degenerate
-nucleotide stands for.
+Hash of degenerate nucleotide definitions. Each entry contains a reference to
+an array of DNA nucleotides that each degenerate nucleotide stands for.
 
 =cut
 
-our %degenerate_map = (
+our %degenerate2nucleotides = (
     N => [qw( A C G T )],
     B => [qw(   C G T )],    # !A
     D => [qw( A   G T )],    # !C
     H => [qw( A C   T )],    # !G
     V => [qw( A C G   )],    # !T
-    M => [qw( A C     )],
-    R => [qw( A   G   )],
+    M => [qw( A C     )],    # aroMatic
+    R => [qw( A   G   )],    # puRine
     W => [qw( A     T )],
     S => [qw(   C G   )],
-    Y => [qw(   C   T )],
-    K => [qw(     G T )]
+    Y => [qw(   C   T )],    # pYrimidine
+    K => [qw(     G T )]     # Keto
 );
-our %degen_map = %degenerate_map;
+
+=head2 %nucleotides2degenerate
+
+Reverse of %degenerate2nucleotides. Keys are alphabetically-sorted DNA
+nucleotides and values are the degenerate nucleotide that can represent those
+nucleotides.
+
+=cut
+
+
+our %nucleotides2degenerate = (
+    ACGT => 'N',
+    CGT  => 'B',
+    AGT  => 'D',
+    ACT  => 'H',
+    ACG  => 'V',
+    AC   => 'M',
+    AG   => 'R',
+    AT   => 'W',
+    CG   => 'S',
+    CT   => 'Y',
+    GT   => 'K'
+);
 
 =head2 %degenerate_hierarchy
 
@@ -132,7 +196,6 @@ our %degenerate_hierarchy = (
     H => [qw( M   W   Y   )],             # !G = [AC],[AT],[CT]
     V => [qw( M R   S     )]              # !T = [AC],[AG],[CG]
 );
-our %degen_hierarchy = %degenerate_hierarchy;
 
 =head1 FUNCTIONS
 
@@ -160,7 +223,7 @@ sub cleanDNA {
 
     my $clean = uc $$seq_ref;
     $clean =~ s/^>.*//m;
-    $clean =~ s/$nuc_fail+//g;
+    $clean =~ s/$all_nucleotide_fail+//g;
     $clean =~ tr/U/T/;
 
     return \$clean;
@@ -170,8 +233,8 @@ sub cleanDNA {
 
     my $seq_ref = randomDNA($length);
 
-Generate random DNA for testing this module or your own
-scripts. Default length is 100 nucleotides.
+Generate random DNA for testing this module or your own scripts. Default length
+is 100 nucleotides.
 
 Example:
 
@@ -197,8 +260,8 @@ sub randomDNA {
 
     my $reverse_ref = reverse_complement($seq_ref);
 
-Finds the reverse complement of the sequence and handles
-degenerate nucleotides.
+Finds the reverse complement of the sequence and handles degenerate
+nucleotides.
 
 Example:
 
@@ -214,8 +277,6 @@ sub reverse_complement {
 
     return \$reverse;
 }
-
-*rev_comp = \&reverse_complement;
 
 1;
 
