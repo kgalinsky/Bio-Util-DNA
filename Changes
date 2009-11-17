@@ -1,5 +1,8 @@
 Revision history for JCVI-DNATools
 
+0.1.10 Nov 17 2009
+  - Added more synonyms
+
 0.1.9 Nov 17 2009
   - Added %degenerate_hierarchy
   - Made %degenerate_map more readable

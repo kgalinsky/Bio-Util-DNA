@@ -29,7 +29,7 @@ package JCVI::DNATools;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.1.9');
+use version; our $VERSION = qv('0.1.10');
 
 use Exporter 'import';
 
@@ -45,24 +45,54 @@ $EXPORT_TAGS{funcs} = [
 $EXPORT_TAGS{all} = [
     @{ $EXPORT_TAGS{funcs} },
     qw(
-      %degenerate_map
-      %degenerate_hierarchy
+      $nucleotides              $nucs
+      @nucleotides              @nucs
+      $nucleotide_match         $nuc_match
+      $nucleotide_fail          $nuc_fail
 
-      $nucs
-      @nucs
-      $nuc_match
-      $nuc_fail
+      $degenerates              $degens
+      @degenerates              @degens
+      $degenerate_match         $degen_match
+      $degenerate_fail          $degen_fail
 
-      $degens
-      @degens
-      $degen_match
-      $degen_fail
+      %degenerate_map           %degen_map
+      %degenerate_hierarchy     %degen_hierarchy
       )
 ];
 
 our @EXPORT_OK = @{ $EXPORT_TAGS{all} };
 
 =head1 VARIABLES
+
+=head2 BASIC VARIABLES
+
+Basic nucleotide variables that could be useful. $nucs is a
+string containing all the nucleotides (including the
+degenerate ones). $nuc_match and $nuc_fail are precompiled
+regular expressions that can be used to match for/against
+a nucleotide. $degen* is the same thing but with degenerates.
+
+=cut
+
+our $nucleotides      = 'ABCDGHKMNRSTUVWY';
+our @nucleotides      = split //, $nucleotides;
+our $nucleotide_match = qr/[$nucleotides]/i;
+our $nucleotide_fail  = qr/[^$nucleotides]/i;
+
+our $nucs      = $nucleotides;
+our @nucs      = @nucleotides;
+our $nuc_match = $nucleotide_match;
+our $nuc_fail  = $nucleotide_fail;
+
+our $degenerates      = 'BDHKMNRSVWY';
+our @degenerates      = split //, $degenerates;
+our $degenerate_match = qr/[$degenerates]/i;
+our $degenerate_fail  = qr/[^$degenerates]/i;
+
+our $degens      = $degenerates;
+our @degens      = @degenerates;
+our $degen_match = $degenerate_match;
+our $degen_fail  = $degenerate_fail;
 
 =head2 %degenerate_map
 
@@ -85,6 +115,7 @@ our %degenerate_map = (
     Y => [qw(   C   T )],
     K => [qw(     G T )]
 );
+our %degen_map = %degenerate_map;
 
 =head2 %degenerate_hierarchy
 
@@ -101,26 +132,7 @@ our %degenerate_hierarchy = (
     H => [qw( M   W   Y   )],             # !G = [AC],[AT],[CT]
     V => [qw( M R   S     )]              # !T = [AC],[AG],[CG]
 );
-
-=head2 BASIC VARIABLES
-
-Basic nucleotide variables that could be useful. $nucs is a
-string containing all the nucleotides (including the
-degenerate ones). $nuc_match and $nuc_fail are precompiled
-regular expressions that can be used to match for/against
-a nucleotide. $degen* is the same thing but with degenerates.
-
-=cut
-
-our $nucs      = 'ABCDGHKMNRSTUVWY';
-our @nucs      = split //, $nucs;
-our $nuc_match = qr/[$nucs]/i;
-our $nuc_fail  = qr/[^$nucs]/i;
-
-our $degens      = 'BDHKMNRSVWY';
-our @degens      = split //, $degens;
-our $degen_match = qr/[$degens]/i;
-our $degen_fail  = qr/[^$degens]/i;
+our %degen_hierarchy = %degenerate_hierarchy;
 
 =head1 FUNCTIONS
 
