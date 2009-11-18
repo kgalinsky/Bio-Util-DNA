@@ -1,5 +1,8 @@
 Revision history for JCVI-DNATools
 
+0.2.1 Nov 18 2009
+  - Added unrollDNA method
+
 0.2.0 Nov 17 2009
   - Relabeled constants
   - Removed synonyms

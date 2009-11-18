@@ -29,7 +29,7 @@ package JCVI::DNATools;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.2.0');
+use version; our $VERSION = qv('0.2.1');
 
 use Exporter 'import';
 
@@ -38,6 +38,7 @@ $EXPORT_TAGS{funcs} = [
     qw(
       cleanDNA
       randomDNA
+      unrollDNA
       reverse_complement
       )
 ];
@@ -166,7 +167,6 @@ nucleotides.
 
 =cut
 
-
 our %nucleotides2degenerate = (
     ACGT => 'N',
     CGT  => 'B',
@@ -278,10 +278,71 @@ sub reverse_complement {
     return \$reverse;
 }
 
+=head2 unrollDNA
+
+    my $seq_arrayref = unrollDNA( $seq_ref );
+
+Unroll a DNA string containing degenerate nucleotides. The first entry of the
+arrayref will be the actual sequence. 
+
+Example:
+
+    my $seq_arrayref = unrollDNA( \'ACSTAD' ) =
+        [
+            'ACSTAD', 'ACCTAD', 'ACGTAD',
+            'ACSTAR', 'ACCTAR', 'ACGTAR',
+            'ACSTAW', 'ACCTAW', 'ACGTAW',
+            'ACSTAK', 'ACCTAK', 'ACGTAK',
+            'ACSTAA', 'ACCTAA', 'ACGTAA',
+            'ACSTAG', 'ACCTAG', 'ACGTAG',
+            'ACSTAT', 'ACCTAT', 'ACGTAT'
+        ]; 
+
+=cut
+
+sub unrollDNA {
+    my ($seq_ref) = @_;
+
+    my @nucleotides = map {
+        [
+            $_,
+            (
+                $degenerate_hierarchy{$_} ? @{ $degenerate_hierarchy{$_} }
+                : ()
+            ),
+            (
+                $degenerate2nucleotides{$_} ? @{ $degenerate2nucleotides{$_} }
+                : ()
+            ),
+        ]
+    } split //, uc $$seq_ref;
+
+    my @possibilities = ( [ (undef) x @nucleotides ] );
+
+    for ( my $i = 0 ; $i < @nucleotides ; $i++ ) {
+        my $variants = $nucleotides[$i];
+        
+        push @possibilities, map {
+            map { [@$_] }
+              @possibilities
+        } (undef) x $#$variants;
+
+        my $block_size = @possibilities / @$variants;
+        for ( my $j = 0 ; $j < @$variants ; $j++ ) {
+            my $variant = $variants->[$j];
+            for ( my $k = $block_size * $j; $k < $block_size * ($j + 1); $k++ ) {
+                $possibilities[$k][$i] = $variant;
+            }
+        }
+    }
+
+    return [ map { join( '', @$_ ) } @possibilities ];
+}
+
 1;
 
 =head1 AUTHOR
 
-Kevin Galinsky, <kgalinsk@jcvi.org>
+Kevin Galinsky, <kgalinsk at jcvi.org>
 
 =cut
