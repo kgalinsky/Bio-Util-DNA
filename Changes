@@ -1,4 +1,8 @@
-Revision history for JCVI-DNATools
+Revision history for Bio::Tiny::Util::DNA
+
+0.2.2 May 10 2011
+  - Namespace change
+  - Migrate to git
 
 0.2.1 Nov 18 2009
   - Added unrollDNA method

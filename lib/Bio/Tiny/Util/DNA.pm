@@ -1,17 +1,10 @@
-# DNATools
-#
-# $Author$
-# $Date$
-# $Revision$
-# $HeadURL$
-
 =head1 NAME
 
-JCVI::DNATools - JCVI Basic DNA tools
+Bio::Tiny::Util::DNA - Basic DNA utilities
 
 =head1 SYNOPSES
 
-    use JCVI::DNATools qw(:all);
+    use Bio::Tiny::Util::DNA qw(:all);
 
     my $clean_ref = cleanDNA($seq_ref);
     my $seq_ref = randomDNA(100);
@@ -24,7 +17,7 @@ working with DNA.
 
 =cut
 
-package JCVI::DNATools;
+package Bio::Tiny::Util::DNA;
 
 use strict;
 use warnings;
@@ -343,6 +336,6 @@ sub unrollDNA {
 
 =head1 AUTHOR
 
-Kevin Galinsky, <kgalinsk at jcvi.org>
+Kevin Galinsky, <kgalinsky plus cpan at gmail dot com>
 
 =cut

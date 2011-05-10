@@ -3,7 +3,7 @@
 use Test::More tests => 1;
 
 BEGIN {
-	use_ok( 'JCVI::DNATools' );
+	use_ok( 'Bio::Tiny::Util::DNA' );
 }
 
-diag( "Testing JCVI::DNATools $JCVI::DNATools::VERSION, Perl $], $^X" );
+diag( "Testing Bio::Tiny::Util::DNA $Bio::Tiny::Util::DNA::VERSION, Perl $], $^X" );

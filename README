@@ -1,4 +1,4 @@
-JCVI::DNATools provides a set of functions and predefined variables which
+Bio::Tiny::Util::DNA provides a set of functions and predefined variables which
 are handy when working with DNA.
 
 INSTALLATION
@@ -15,21 +15,21 @@ SUPPORT AND DOCUMENTATION
 
 After installing, you can find documentation for this module with the perldoc command.
 
-    perldoc JCVI::DNATools
+    perldoc Bio::Tiny::Util::DNA
 
 You can also look for information at:
 
     Search CPAN
-        http://search.cpan.org/dist/JCVI-DNATools
+        http://search.cpan.org/dist/Bio-Tiny-Util-DNA
 
     CPAN Request Tracker:
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=JCVI-DNATools
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Bio-Tiny-Util-DNA
 
     AnnoCPAN, annotated CPAN documentation:
-        http://annocpan.org/dist/JCVI-DNATools
+        http://annocpan.org/dist/Bio-Tiny-Util-DNA
 
     CPAN Ratings:
-        http://cpanratings.perl.org/d/JCVI-DNATools
+        http://cpanratings.perl.org/d/Bio-Tiny-Util-DNA
 
 COPYRIGHT AND LICENCE
 
