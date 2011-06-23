@@ -1,10 +1,10 @@
 =head1 NAME
 
-Bio::Tiny::Util::DNA - Basic DNA utilities
+Bio::Util::DNA - Basic DNA utilities
 
 =head1 SYNOPSES
 
-    use Bio::Tiny::Util::DNA qw(:all);
+    use Bio::Util::DNA qw(:all);
 
     my $clean_ref = cleanDNA($seq_ref);
     my $seq_ref = randomDNA(100);
@@ -17,7 +17,7 @@ working with DNA.
 
 =cut
 
-package Bio::Tiny::Util::DNA;
+package Bio::Util::DNA;
 
 use strict;
 use warnings;
