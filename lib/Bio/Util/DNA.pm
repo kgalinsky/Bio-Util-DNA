@@ -336,6 +336,15 @@ sub unrollDNA {
 
 =head1 AUTHOR
 
-Kevin Galinsky, <kgalinsky plus cpan at gmail dot com>
+Kevin Galinsky, <first initial last name plus cpan at gmail dot com>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (c) 2010-2011, Broad Institute.
+
+Copyright (c) 2008-2009, J. Craig Venter Institute.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
 
 =cut
